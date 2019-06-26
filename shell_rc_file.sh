@@ -23,6 +23,7 @@
 #
 # EXAMPLE
 #
+# . /path/to/shell_rc_file.sh
 # RCFILE=$(shell_rc_file)
 # EXIT_STATUS=$?
 # if ! [[ $EXIT_STATUS -eq 0 ]] || [[ -z $RCFILE ]]; then

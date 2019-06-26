@@ -21,6 +21,22 @@
 # 2   - Argument $1 is less than $2
 # 255 - One or both of the arguments is not a number
 #
+# EXAMPLE
+#
+# . /path/to/compare_versions.sh
+# compare_versions $VER1 $VER2
+# if [[ $? -eq 0 ]]; then
+#         echo "Versions are the same"
+# elif [[ $? -eq 1 ]]; then
+#         echo "VER1 is greater than VER2"
+# elif [[ $? -eq 2 ]]; then
+#         echo "VER1 is less than VER2"
+# elif [[ $? -eq 255]]; then
+#         echo "Invalid comparator: arguments must be semantic versions, Eg., 1.0.0"
+# else
+#         echo "This cannot happen"
+# fi
+#
 # BUGS
 #
 # This fails in the ZSH shell unless using emulate sh.
