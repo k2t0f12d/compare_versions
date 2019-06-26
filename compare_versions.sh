@@ -20,6 +20,10 @@
 # 1   - Argument $1 is greater than $2
 # 2   - Argument $1 is less than $2
 # 255 - One or both of the arguments is not a number
+#
+# BUGS
+#
+# This fails in the ZSH shell unless using emulate sh.
 
 # NOTE: uncomment the following to enable debugging output from BASH
 #set -x
@@ -30,7 +34,7 @@ compare_versions() {
         [[ $1 =~ ^[0-9]?[0-9.]+$ ]] || return 255
         [[ $2 =~ ^[0-9]?[0-9.]+$ ]] || return 255
 
-        if test $1 == $2
+        if [[ $1 == $2 ]]
         then
                 return 0
         fi
@@ -41,11 +45,11 @@ compare_versions() {
         # Compare version string lengths; if ver2 has
         # more version places, fill the missing places
         # in ver1 with zeros.
-        for((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
+        for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
                 ver1[i]=0
         done
 
-        for((i=0; i<${#ver1[@]}; i++)); do
+        for ((i=0; i<${#ver1[@]}; i++)); do
 
                 # If ver1 has more version places than ver2
                 # fill the extra places in ver2 with zero.
@@ -54,12 +58,12 @@ compare_versions() {
                 fi
 
                 # Case greater than returns 1
-                if((10#${ver1[i]} > 10#${ver2[i]})); then
+                if ((10#${ver1[i]} > 10#${ver2[i]})); then
                         return 1
                 fi
 
                 # Case less than returns 2
-                if((10#${ver1[i]} < 10#${ver2[i]})); then
+                if ((10#${ver1[i]} < 10#${ver2[i]})); then
                         return 2
                 fi
         done
@@ -67,7 +71,7 @@ compare_versions() {
         return 0
 }
 
-if test $ENABLE_TESTS; then
+if [[ $ENABLE_TESTS ]]; then
 
         test_compare_version() {
                 compare_versions $1 $2
@@ -79,7 +83,7 @@ if test $ENABLE_TESTS; then
                 255) operator='NaN';;
                 esac
 
-                if test $operator != $3 || test $operator == 'NaN'; then
+                if [[ $operator != $3 ]] || [[ $operator == 'NaN' ]]; then
                         echo "FAIL: testing for '$3' but received '$operator' while comparing '$1' and '$2'"
                         return 1
                 else

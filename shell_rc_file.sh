@@ -30,12 +30,12 @@
 #set -x
 
 shell_rc_file() {
-        if test -z "${SHELL}" || test -z "${HOME}"; then
+        if [[ -z "${SHELL}" ]] || [[ -z "${HOME}" ]]; then
                 return 255
         fi
 
         SHELL_NAME=${SHELL##*\/}
-        if ! test -f "${HOME}/.${SHELL_NAME}rc"; then
+        if ! [[ -f "${HOME}/.${SHELL_NAME}rc" ]]; then
                 return 1
         fi
 
@@ -43,12 +43,12 @@ shell_rc_file() {
         return 0
 }
 
-if test $ENABLE_TESTS; then
+if [[ $ENABLE_TESTS ]]; then
         echo "Running the test suite..."
         OLD_SHELL=$SHELL
         unset SHELL
         RCFILE=$(shell_rc_file)
-        if test $? -eq 255; then
+        if [[ $? -eq 255 ]]; then
                 echo "PASS: Environment shell not set"
         else
                 echo "FAIL: Environment shell is set when it should not be"
@@ -56,7 +56,7 @@ if test $ENABLE_TESTS; then
         
         SHELL="foo"
         RCFILE=$(shell_rc_file)
-        if test $? -eq 1; then
+        if [[ $? -eq 1 ]]; then
                 echo "PASS: Foo rc file doesn't exist"
         else
                 echo "FAIL: Foo rc file exits when it shouldn't"
@@ -64,13 +64,13 @@ if test $ENABLE_TESTS; then
         
         touch "${HOME}/.${SHELL}rc"
         RCFILE=$(shell_rc_file)
-        if test $? -eq 0; then
+        if [[ $? -eq 0 ]]; then
                 echo "PASS: Foo rc file exists"
         else
                 echo "FAIL: Foo rc file doesn't exist when it should"
         fi
-        
-        if test "${RCFILE}" == "${HOME}/.${SHELL}rc"; then
+
+        if [[ "${RCFILE}" == "${HOME}/.${SHELL}rc" ]]; then
                 echo "PASS: Function output rc filename $RCFILE"
         else
                 echo "FAIL: Incorrect output: Got $RCFILE"
