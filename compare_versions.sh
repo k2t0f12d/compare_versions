@@ -7,7 +7,7 @@
 # USAGE
 #
 # Source this script to load the function, its test harness.
-# All testing will run automatically once.
+# Testing will be triggered with environment variable ENABLE_TESTS set.
 #
 # Invoke compare_version with two arguments. Each argument must be a
 # string that starts with a numeral, and thereafter only contains numerals
@@ -67,30 +67,32 @@ compare_versions() {
         return 0
 }
 
-test_compare_version() {
-        compare_versions $1 $2
+if test $ENABLE_TESTS; then
 
-        case $? in
-        0) operator='=';;
-        1) operator='>';;
-        2) operator='<';;
-        255) operator='NaN';;
-        esac
+        test_compare_version() {
+                compare_versions $1 $2
 
-        if test $operator != $3 || test $operator == 'NaN'; then
-                echo "FAIL: testing for '$3' but received '$operator' while comparing '$1' and '$2'"
-                return 1
-        else
-                echo "PASS: tested '$1' and '$2' for '$3'"
-        fi
-}
+                case $? in
+                0) operator='=';;
+                1) operator='>';;
+                2) operator='<';;
+                255) operator='NaN';;
+                esac
 
-echo 'Loading `compare_versions()`...'
-echo 'Running the test suite...'
-echo '>>>>>>>>>> These tests should pass'
-while read -r test; do
-        test_compare_version $test
-done <<EOF
+                if test $operator != $3 || test $operator == 'NaN'; then
+                        echo "FAIL: testing for '$3' but received '$operator' while comparing '$1' and '$2'"
+                        return 1
+                else
+                        echo "PASS: tested '$1' and '$2' for '$3'"
+                fi
+        }
+
+        echo 'Loading `compare_versions()`...'
+        echo 'Running the test suite...'
+        echo '>>>>>>>>>> These tests should pass'
+        while read -r test; do
+                test_compare_version $test
+        done <<EOF
 1            1            =
 2.1          2.2          <
 3.0.4.10     3.0.4.2      >
@@ -109,8 +111,10 @@ done <<EOF
 1.0          1..0         =
 EOF
 
-echo '>>>>>>>>>> These tests should fail'
-test_compare_version 1 1 '>'
-test_compare_version la la '='
+        echo '>>>>>>>>>> These tests should fail'
+        test_compare_version 1 1 '>'
+        test_compare_version la la '='
+
+fi
 
 echo 'Finished loading `compare_versions()` :)'
