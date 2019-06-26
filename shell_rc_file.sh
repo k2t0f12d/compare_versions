@@ -24,6 +24,11 @@
 # EXAMPLE
 #
 # RCFILE=$(shell_rc_file)
+# EXIT_STATUS=$?
+# if ! [[ $EXIT_STATUS -eq 0 ]] || [[ -z $RCFILE ]]; then
+#       echo "Failed to retrieve shell rc file"
+#       return $EXIT_STATUS
+# fi
 #
 
 # NOTE: uncomment the following to enable debugging output from BASH
@@ -45,6 +50,8 @@ shell_rc_file() {
 
 if [[ $ENABLE_TESTS ]]; then
         echo "Running the test suite..."
+        echo ">>>>>>>>>> These tests should pass"
+        EXIT_STATUS=0
         OLD_SHELL=$SHELL
         unset SHELL
         RCFILE=$(shell_rc_file)
@@ -52,6 +59,7 @@ if [[ $ENABLE_TESTS ]]; then
                 echo "PASS: Environment shell not set"
         else
                 echo "FAIL: Environment shell is set when it should not be"
+                EXIT_STATUS=1
         fi
         
         SHELL="foo"
@@ -60,6 +68,7 @@ if [[ $ENABLE_TESTS ]]; then
                 echo "PASS: Foo rc file doesn't exist"
         else
                 echo "FAIL: Foo rc file exits when it shouldn't"
+                EXIT_STATUS=1
         fi
         
         touch "${HOME}/.${SHELL}rc"
@@ -68,16 +77,31 @@ if [[ $ENABLE_TESTS ]]; then
                 echo "PASS: Foo rc file exists"
         else
                 echo "FAIL: Foo rc file doesn't exist when it should"
+                EXIT_STATUS=1
         fi
 
         if [[ "${RCFILE}" == "${HOME}/.${SHELL}rc" ]]; then
                 echo "PASS: Function output rc filename $RCFILE"
         else
                 echo "FAIL: Incorrect output: Got $RCFILE"
+                EXIT_STATUS=1
         fi
 
-        rm $RCFILE
+        if [[ -n $RCFILE ]]; then
+                rm $RCFILE
+                if ! [[ $? -eq 0 ]]; then
+                        EXIT_STATUS=1
+                fi
+        else
+                FAIL: "Foo rc file was never created"
+                EXIT_STATUS=1
+        fi
+
         unset RCFILE
         SHELL=$OLD_SHELL
         unset OLD_SHELL
+        echo 'Finished loading `shell_rc_file()` :)'
+        return $EXIT_STATUS
 fi
+
+echo 'Finished loading `shell_rc_file()` :)'
