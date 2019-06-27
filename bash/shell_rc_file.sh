@@ -50,6 +50,7 @@ shell_rc_file() {
 }
 
 if [[ $ENABLE_TESTS ]]; then
+        echo 'Loading `shell_rc_file()`...'
         echo "Running the test suite..."
         echo ">>>>>>>>>> These tests should pass"
         EXIT_STATUS=0

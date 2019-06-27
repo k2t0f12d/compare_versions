@@ -95,6 +95,7 @@ os_name() {
 }
 
 if [[ $ENABLE_TESTS ]]; then
+        echo 'Loading `os_name()`...'
         echo "Running the test suite..."
         echo ">>>>>>>>>> These tests should pass"
         function uname() { echo -n 'linux'; }
