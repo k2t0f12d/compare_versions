@@ -36,16 +36,11 @@
 # else
 #         echo "This cannot happen"
 # fi
-#
-# BUGS
-#
-# This fails in the ZSH shell unless using emulate sh.
 
 # NOTE: uncomment the following to enable debugging output from BASH
 #set -x
 
 compare_versions() {
-
         # Only accept numerical inputs
         [[ $1 =~ ^[0-9]?[0-9.]+$ ]] || return 255
         [[ $2 =~ ^[0-9]?[0-9.]+$ ]] || return 255
@@ -56,21 +51,29 @@ compare_versions() {
         fi
 
         local IFS=.
-        local i ver1=($1) ver2=($2)
+        if [[ $ZSH_VERSION ]]; then
+                local i ver1=($=1) ver2=($=2)
+        else
+                local i ver1=($1) ver2=($2)
+        fi
+
+        # Oh-my-ZSH >.<
+        INDEX=0
+        [[ $ZSH_VERSION ]] && INDEX=1  # ZSH uses 1 based arrays
 
         # Compare version string lengths; if ver2 has
         # more version places, fill the missing places
         # in ver1 with zeros.
-        for ((i=${#ver1[@]}; i<${#ver2[@]}; i++)); do
-                ver1[i]=0
+        for ((i=${#ver1[@]}; i<(${#ver2[@]}+$INDEX); i++)); do
+                ver1=( ${ver1[@]} 0 )
         done
 
-        for ((i=0; i<${#ver1[@]}; i++)); do
+        for ((i=$INDEX; i<(${#ver1[@]}+$INDEX); i++)); do
 
                 # If ver1 has more version places than ver2
                 # fill the extra places in ver2 with zero.
-                if [[ -z ${ver2[i]} ]]; then
-                        ver2[i]=0
+                if [[ -z ${ver2[$i]} ]]; then
+                        ver2=( ${ver2[@]} 0 )
                 fi
 
                 # Case greater than returns 1
@@ -88,7 +91,7 @@ compare_versions() {
 }
 
 if [[ $ENABLE_TESTS ]]; then
-
+        [[ $ZSH_VERSION ]] && setopt sh_word_split
         test_compare_version() {
                 compare_versions $1 $2
 
@@ -134,7 +137,7 @@ EOF
         echo '>>>>>>>>>> These tests should fail'
         test_compare_version 1 1 '>'
         test_compare_version la la '='
-
+        [[ $ZSH_VERSION ]] && unsetopt sh_word_split
 fi
 
 echo 'Finished loading `compare_versions()` :)'
