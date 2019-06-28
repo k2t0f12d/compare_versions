@@ -103,6 +103,8 @@ if [[ $ENABLE_TESTS ]]; then
         OS=$(os_name)
         if [[ $OS == "linux" ]]; then
                 echo "PASS: name linux returns $OS"
+        else
+                echo "FAIL: name linux returned $OS"
         fi
         unset OS
         unset MATCH match
@@ -113,6 +115,8 @@ if [[ $ENABLE_TESTS ]]; then
         OS=$(os_name)
         if [[ $OS == "freebsd" ]]; then
                 echo "PASS: name freebsd returns $OS"
+        else
+                echo "FAIL: name freebsd returned $OS"
         fi
         unset OS
         unset MATCH match
@@ -124,6 +128,8 @@ if [[ $ENABLE_TESTS ]]; then
         OS=$(os_name)
         if [[ $OS == "macosx" ]]; then
                 echo "PASS: name darwin returns $OS"
+        else
+                echo "FAIL: name darwin returned $OS"
         fi
         unset OS
         unset MATCH match
@@ -135,6 +141,8 @@ if [[ $ENABLE_TESTS ]]; then
         OS=$(os_name)
         if [[ $OS == "windows" ]]; then
                 echo "PASS: name mingw returns $OS"
+        else
+                echo "FAIL: name mingw returned $OS"
         fi
         unset OS
         unset MATCH match
@@ -145,7 +153,10 @@ if [[ $ENABLE_TESTS ]]; then
         OS=$(os_name)
         if [[ $OS == "windows" ]]; then
                 echo "PASS: name cygwin returns $OS"
+        else
+                echo "FAIL: name cygwin returned $OS"
         fi
+
         unset OS
         unset MATCH match
         unset -f uname
@@ -156,6 +167,8 @@ if [[ $ENABLE_TESTS ]]; then
         OS=$(os_name)
         if [[ $? -eq 1 ]] && [[ -z $OS ]]; then
                 echo "FAIL: name foo fails"
+        else
+                echo "ERROR: name foo should not return $OS"
         fi
         unset OS
         unset MATCH match
