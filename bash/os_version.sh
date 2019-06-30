@@ -80,7 +80,19 @@ os_version() {
                  else
                          return 1
                  fi ;;
-        macosx) ;;
+        macosx) command -v sw_vers 2>&1 >/dev/null
+                if [[ $? -eq 0 ]]; then
+                        echo $(sw_vers -productVersion)
+                        return 0
+                fi
+                command -v defaults 2>&1 >/dev/null
+                if [[ $? -eq 0 ]]; then
+                        echo $(defaults read loginwindow SystemVersionStampAsString)
+                        return 0
+                fi
+
+                return 1
+                ;;
         windows) ;;
         *) ;;
         esac
