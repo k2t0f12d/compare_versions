@@ -95,4 +95,4 @@ if [[ $ENABLE_TESTS ]]; then
         echo '>>>>>>>>>> These tests should pass'
 fi
 
-echo 'Finished loading `os_verion()` :)'
+echo 'Finished loading `os_version()` :)'
