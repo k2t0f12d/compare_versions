@@ -101,10 +101,101 @@ os_version() {
 }
 
 if [[ $ENABLE_TESTS ]]; then
-
         echo 'Loading `os_version()`...'
         echo "Running the test suite..."
         echo '>>>>>>>>>> These tests should pass'
+        function lsb_release() { echo -n "1.0.0" }
+        exit_status=$?
+        OSVER=$(os_version "linux")
+        if ! [[ $exit_status ]] || [[ -z $OSVER ]]; then
+                echo "FAIL: expected '1.0.0' but got nothing for OS name 'linux'"
+        elif [[ $exit_status ]] && [[ $OSVER =~ [0-9]+(.[0-9]+)?(.[0-9]+)? ]]; then
+                if [[ -n $BASH_REMATCH ]] && [[ $BASH_REMATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'linux'"
+                elif [[ -n $MATCH ]] && [[ $MATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'linux'"
+                else
+                        echo "FAIL: cannot retrieve OS version"
+                fi
+        fi
+        unset OSVER
+        unset BASH_REMATCH
+        unset MATCH MATCH
+        unset -f lsb_release
+
+        function freebsd-version() { echo -n "1.0.0" }
+        exit_status=$?
+        OSVER=$(os_version "freebsd")
+        if ! [[ $exit_status ]] || [[ -z $OSVER ]]; then
+                echo "FAIL: expected '1.0.0' but got nothing for OS name 'freebsd'"
+        elif [[ $exit_status ]] && [[ $OSVER =~ [0-9]+(.[0-9]+)?(.[0-9]+)? ]]; then
+                if [[ -n $BASH_REMATCH ]] && [[ $BASH_REMATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'freebsd'"
+                elif [[ -n $MATCH ]] && [[ $MATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'freebsd'"
+                else
+                        echo "FAIL: cannot retrieve OS version"
+                fi
+        fi
+        unset OSVER
+        unset BASH_REMATCH
+        unset MATCH MATCH
+        unset -f freebsd-version
+
+        function sw_vers() { echo -n "1.0.0" }
+        exit_status=$?
+        OSVER=$(os_version "macosx")
+        if ! [[ $exit_status ]] || [[ -z $OSVER ]]; then
+                echo "FAIL: expected '1.0.0' but got nothing for OS name 'macosx'"
+        elif [[ $exit_status ]] && [[ $OSVER =~ [0-9]+(.[0-9]+)?(.[0-9]+)? ]]; then
+                if [[ -n $BASH_REMATCH ]] && [[ $BASH_REMATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'macosx'"
+                elif [[ -n $MATCH ]] && [[ $MATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'macosx'"
+                else
+                        echo "FAIL: cannot retrieve OS version"
+                fi
+        fi
+        unset OSVER
+        unset BASH_REMATCH
+        unset MATCH MATCH
+        unset -f sw_vers
+
+        echo ">>>>>>>>>> These tests should fail"
+        function lsb_release() { return 1; }
+        exit_status=$?
+        OSVER=$(os_version "linux")
+        if ! [[ $exit_status ]] || [[ -z $OSVER ]]; then
+                echo "FAIL: expected '1.0.0' but got nothing for OS name 'linux'"
+        elif [[ $exit_status ]] && [[ $OSVER =~ [0-9]+(.[0-9]+)?(.[0-9]+)? ]]; then
+                if [[ -n $BASH_REMATCH ]] && [[ $BASH_REMATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'linux'"
+                elif [[ -n $MATCH ]] && [[ $MATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $OSVER for OS name 'linux'"
+                else
+                        echo "FAIL: cannot retrieve OS version"
+                fi
+        fi
+        unset OSVER
+        unset BASH_REMATCH
+        unset MATCH MATCH
+        unset -f lsb_release
+
+        OSVER=$(os_version "foo")
+        if ! [[ $exit_status ]] || [[ -z $OSVER ]]; then
+                echo "FAIL: got no version string for OS name 'foo'"
+        elif [[ $exit_status ]] && [[ $OSVER =~ [0-9]+(.[0-9]+)?(.[0-9]+)? ]]; then
+                if [[ -n $BASH_REMATCH ]] && [[ $BASH_REMATCH == "1.0.0" ]]; then
+                        echo "PASS: got '$OSVER' for OS name 'foo'"
+                elif [[ -n $MATCH ]] && [[ $MATCH == "1.0.0" ]]; then
+                        echo "PASS: got '$OSVER' for OS name 'foo'"
+                else
+                        echo "FAIL: cannot retrieve OS version for OS name 'foo'"
+                fi
+        fi
+        unset OSVER
+        unset BASH_REMATCH
+        unset MATCH MATCH
 fi
 
 echo 'Finished loading `os_version()` :)'
