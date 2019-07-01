@@ -38,6 +38,8 @@ pyenv_version() {
         if [[ $? -ne 0 ]]; then
                 if ! [[ -f $HOME/.pyenv/bin/pyenv ]]; then
                         return 1
+                else
+                        echo "pyenv exists but is not in \$PATH"
                 fi
                 return 1
         else
@@ -58,7 +60,24 @@ if [[ $ENABLE_TESTS ]]; then
         echo 'Loading `python_version()`...'
         echo "Running the test suite..."
         echo '>>>>>>>>>> These tests should pass'
-        echo 'FAIL: Add some tests!!!'
+        function pyenv() { echo -n "1.0.0"; return 0; }
+        exit_status=$?
+        PYENV_VERSION=$(pyenv_version)
+        if ! [[ $exit_status ]] || [[ -z $PYENV_VERSION ]]; then
+                echo "FAIL: expected '1.0.0' but got nothing pyenv version'"
+        elif [[ $exit_status ]] && [[ $PYENV_VERSION =~ [0-9]+(.[0-9]+)?(.[0-9]+)? ]]; then
+                if [[ -n $BASH_REMATCH ]] && [[ $BASH_REMATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $PYENV_VERSION for pyenv version"
+                elif [[ -n $MATCH ]] && [[ $MATCH == "1.0.0" ]]; then
+                        echo "PASS: expected '1.0.0' and got $PYENV_VERSION for pyenv version"
+                else
+                        echo "FAIL: cannot retrieve pyenv version"
+                fi
+        fi
+        unset PYENV_VERSION
+        unset BASH_REMATCH
+        unset MATCH MATCH
+        unset -f pyenv
 fi
 
 echo 'Finished loading `pyenv_version()` :)'
